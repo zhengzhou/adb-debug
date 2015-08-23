@@ -6,10 +6,6 @@
 
 package siir.es.adbWireless;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -27,6 +23,10 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
 
 public class Utils {
 
