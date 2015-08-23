@@ -6,40 +6,35 @@
 
 package siir.es.adbWireless;
 
-import java.net.URI;
+import android.os.AsyncTask;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import android.os.AsyncTask;
+import java.net.URI;
 
-class AutoConnectTask extends AsyncTask<Void, Void, Void>
-{
+class AutoConnectTask extends AsyncTask<Void, Void, Void> {
 
-	private String url;
+    private String url;
 
-	public AutoConnectTask(String u)
-	{
-		this.url = u;
-	}
+    public AutoConnectTask(String u) {
+        this.url = u;
+    }
 
-	@Override
-	protected Void doInBackground(Void... params)
-	{
-		try
-		{
-			URI url = new URI(this.url);
-			System.out.println("url = " + this.url);
-			HttpClient httpClient = new DefaultHttpClient();
-			HttpGet method = new HttpGet(url);
-			httpClient.execute(method);
-		}
-		catch (Exception e)
-		{
-			Debug.error("ERROR doInBackground()", e);
-		}
-		return null;
-	}
+    @Override
+    protected Void doInBackground(Void... params) {
+        try {
+            URI url = new URI(this.url);
+            System.out.println("url = " + this.url);
+
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpGet method = new HttpGet(url);
+            httpClient.execute(method);
+        } catch (Exception e) {
+            Debug.error("ERROR doInBackground()", e);
+        }
+        return null;
+    }
 
 }

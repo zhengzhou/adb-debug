@@ -22,13 +22,13 @@ apply plugin: 'com.android.application'
 android({
     println 'test'
 
-    compileSdkVersion 23
+    compileSdkVersion 22
     buildToolsVersion "23.0.0"
 
     defaultConfig {
         applicationId "com.zhou.nestedlayout"
         minSdkVersion 17
-        targetSdkVersion 23
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
     }
@@ -39,3 +39,9 @@ android({
         }
     }
 })
+
+dependencies {
+    compile 'com.orhanobut:logger:1.10'
+    compile "com.android.support:support-v4:23.0.0"
+}
+
