@@ -24,6 +24,12 @@ import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.orhanobut.logger.Logger;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
@@ -159,11 +165,18 @@ public class Utils {
 
         String urlRequest = "http://" + autoConIP + ":" + autoConPort + "/" + mode + "/" + Utils.getWifiIp(context);
 
-        try {
-            new AutoConnectTask(urlRequest).execute();
-        } catch (Exception e) {
-            //no-op
-        }
+        Volley.newRequestQueue(context).add(new StringRequest(urlRequest, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Logger.d(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Logger.e(error, "onErrorResponse");
+            }
+        }));
+
 
     }
 
