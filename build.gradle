@@ -26,11 +26,11 @@ android({
     buildToolsVersion "23.0.0"
 
     defaultConfig {
-        applicationId "com.zhou.nestedlayout"
+        applicationId "com.github.zhengzhou.adb"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
     }
     buildTypes {
         release {
@@ -43,6 +43,7 @@ android({
 dependencies {
     compile 'com.orhanobut:logger:1.10'
     compile 'com.mcxiaoke.volley:library:1.0.17'
+    compile 'com.github.dmytrodanylyk.circular-progress-button:library:1.1.2'
 
     compile "com.android.support:support-v4:23.0.0"
     compile 'com.android.support:appcompat-v7:23.0.0'

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="material_palette_blue_primary">#01c34a</color>
+    <color name="window_dark">#a3a3a3</color>
+    <color name="accent_material_light">#009638</color>
+    <color name="material_palette_blue_primary_dark">#007b2f</color>
+
+</resources>

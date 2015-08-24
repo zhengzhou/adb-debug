@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Base application theme. -->
+
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/material_palette_blue_primary</item>
         <item name="colorPrimaryDark">@color/material_palette_blue_primary_dark</item>
         <item name="android:windowBackground">@color/window_dark</item>
+        <item name="android:navigationBarColor">@color/material_blue_grey_800</item>
     </style>
-
 </resources>

@@ -23,6 +23,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.Toast;
 
+import com.orhanobut.logger.Logger;
+
 public class TrackShutdown extends BroadcastReceiver {
 
     @Override
@@ -31,7 +33,7 @@ public class TrackShutdown extends BroadcastReceiver {
         SharedPreferences settings = context.getSharedPreferences("wireless", 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("mState", false);
-        editor.commit();
+        editor.apply();
 
         if (Utils.prefsOnBoot(context)) {
 
@@ -58,7 +60,7 @@ public class TrackShutdown extends BroadcastReceiver {
             try {
                 Utils.adbStart(context);
             } catch (Exception e) {
-                Debug.error("call adbStart() ERROR ********", e);
+                Logger.e(e, "call adbStart() ERROR ********");
             }
 
         }

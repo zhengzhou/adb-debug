@@ -11,7 +11,6 @@
         android:layout_gravity="center_vertical|center_horizontal"
         android:contentDescription="@string/app_name"
         android:scaleType="fitStart"
-        android:src="@drawable/widget" >
-    </ImageView>
+        android:src="@drawable/widget" />
 
 </FrameLayout>

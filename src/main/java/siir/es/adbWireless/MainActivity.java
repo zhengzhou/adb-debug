@@ -1,26 +1,24 @@
 package siir.es.adbWireless;
 
-import android.app.Activity;
-import android.app.AlertDialog;
+
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.view.KeyEvent;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
-import android.widget.RemoteViews;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class MainActivity extends Activity {
+import com.dd.CircularProgressButton;
+
+public class MainActivity extends AppCompatActivity {
+
     public static final String PORT = "5555";
     public static final boolean USB_DEBUG = false;
 
@@ -32,14 +30,10 @@ public class MainActivity extends Activity {
     private TextView tv_footer_3;
     private ImageView iv_button;
 
-    private Toast toastBack;
-
-    public static RemoteViews remoteViews = new RemoteViews("siir.es.adbWireless", R.layout.adb_appwidget);
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);//TODO
+        setContentView(R.layout.main);
         initView();
         if (Utils.mNotificationManager == null) {
             Utils.mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -57,17 +51,14 @@ public class MainActivity extends Activity {
             builder.show();
         }
 
-        if (!Utils.checkWifiState(this)) {
-            wifiState = false;
+        wifiState = Utils.checkWifiState(this);
             Utils.saveWiFiState(this, wifiState);
+        if (!wifiState) {
             if (Utils.prefsWiFiOn(this)) {
                 Utils.enableWiFi(this, true);
             } else {
-                Utils.WiFidialog(this);
+                Utils.WiFiDialog(this);
             }
-        } else {
-            wifiState = true;
-            Utils.saveWiFiState(this, wifiState);
         }
 
         this.iv_button.setOnClickListener(new OnClickListener() {
@@ -88,6 +79,22 @@ public class MainActivity extends Activity {
 
             }
         });
+
+        final CircularProgressButton circularButton = (CircularProgressButton) findViewById(R.id.circularButton);
+        circularButton.setIndeterminateProgressMode(true);
+        circularButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (circularButton.getProgress() == 0) {
+                    circularButton.setProgress(50);
+                } else if (circularButton.getProgress() == -1) {
+                    circularButton.setProgress(0);
+                } else {
+                    circularButton.setProgress(-1);
+                }
+            }
+        });
+
     }
 
     private void initView() {
@@ -107,20 +114,12 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        Debug.log("onPause()");
-    }
-
-    @Override
     protected void onDestroy() {
         try {
             Utils.adbStop(this);
-        } catch (Exception e) {
-        }
-        try {
             Utils.mNotificationManager.cancelAll();
         } catch (Exception e) {
+            //no-op
         }
         /*
 		 * try { if(Utils.mWakeLock != null) { Utils.mWakeLock.release(); } } catch (Exception e) { }
@@ -130,6 +129,7 @@ public class MainActivity extends Activity {
                 Utils.enableWiFi(this, false);
             }
         } catch (Exception e) {
+            //no-op
         }
         super.onDestroy();
     }
@@ -140,8 +140,8 @@ public class MainActivity extends Activity {
         return true;
     }
 
-    @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+
+    /*public boolean onMenuItemSelected(int featureId, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_prefs:
                 Intent i = new Intent(this, SettingsActivity.class);
@@ -155,28 +155,8 @@ public class MainActivity extends Activity {
                 return true;
         }
         return super.onMenuItemSelected(featureId, item);
-    }
+    }*/
 
-    /**
-     * onBackPressed() requires Android 2.0, API 5 (ECLAIR)
-     */
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (toastBack == null || toastBack.getView().getWindowVisibility() != View.VISIBLE) {
-                toastBack = Toast.makeText(this, R.string.exit_info, Toast.LENGTH_LONG);
-//				toastBack.show();
-            }
-            showExitDialog();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
 
     private void updateState() {
         if (mState) {
@@ -197,30 +177,4 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void showHelpDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getString(R.string.about)).setCancelable(true).setPositiveButton(getString(R.string.button_close), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-            }
-        });
-        builder.setIcon(R.drawable.ic_launcher);
-        builder.create();
-        builder.setTitle(R.string.app_name);
-        builder.show();
-    }
-
-    private void showExitDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getString(R.string.tv_exit)).setCancelable(true).setPositiveButton("退出", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                MainActivity.this.finish();
-            }
-        }).setNegativeButton(getString(R.string.button_cancle), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-            }
-        });
-        builder.setIcon(R.drawable.ic_launcher);
-        builder.setTitle(R.string.app_name);
-        builder.show();
-    }
 }

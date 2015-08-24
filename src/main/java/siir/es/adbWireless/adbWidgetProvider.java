@@ -31,7 +31,7 @@ import android.widget.Toast;
 public class adbWidgetProvider extends AppWidgetProvider {
 
     private static String ACTION_CLICK = "siir.es.adbwireless.widget_update";
-    private RemoteViews views = new RemoteViews("siir.es.adbWireless", R.layout.adb_appwidget);
+    private RemoteViews views = new RemoteViews(BuildConfig.APPLICATION_ID, R.layout.adb_appwidget);
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {

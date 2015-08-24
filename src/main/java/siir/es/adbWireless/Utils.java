@@ -49,7 +49,7 @@ public class Utils {
         editor.commit();
     }
 
-    public static void WiFidialog(final Context context) {
+    public static void WiFiDialog(final Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(context.getString(R.string.no_wifi)).setCancelable(true).setPositiveButton(context.getString(R.string.button_exit), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -87,11 +87,7 @@ public class Utils {
             SharedPreferences settings = context.getSharedPreferences("wireless", 0);
             SharedPreferences.Editor editor = settings.edit();
             editor.putBoolean("mState", true);
-            editor.commit();
-
-            MainActivity.remoteViews.setImageViewResource(R.id.widgetButton, R.drawable.widgeton);
-            ComponentName cn = new ComponentName(context, adbWidgetProvider.class);
-            AppWidgetManager.getInstance(context).updateAppWidget(cn, MainActivity.remoteViews);
+            editor.apply();
 
             // Try to auto connect
             if (Utils.prefsAutoCon(context)) {
@@ -129,10 +125,6 @@ public class Utils {
             SharedPreferences.Editor editor = settings.edit();
             editor.putBoolean("mState", false);
             editor.apply();
-
-            MainActivity.remoteViews.setImageViewResource(R.id.widgetButton, R.drawable.widget);
-            ComponentName cn = new ComponentName(context, adbWidgetProvider.class);
-            AppWidgetManager.getInstance(context).updateAppWidget(cn, MainActivity.remoteViews);
 
             // Try to auto disconnect
             if (Utils.prefsAutoCon(context)) {

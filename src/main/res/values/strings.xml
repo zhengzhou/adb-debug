@@ -2,6 +2,8 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <string name="app_name">无线调试</string>
+    <string name="adb_open">打开无线调试</string>
+    <string name="adb_close">关闭无线调试</string>
     <string name="top_text">欢迎使用无线调试，点击下面的按钮你可以开启/关闭无线调试</string>
     <string name="footer_text_1">无线调试已经打开，请在你的电脑中执行以下命令:</string>
     <string name="footer_text_2"></string>
