@@ -33,18 +33,6 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver
-            android:name=".adbWidgetProvider"
-            android:enabled="true" >
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="siir.es.adbwireless.widget_update" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/adb_appwidget_info" />
-        </receiver>
     </application>
 
 </manifest>

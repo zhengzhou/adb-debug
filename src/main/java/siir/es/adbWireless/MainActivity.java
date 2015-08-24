@@ -4,6 +4,7 @@ package siir.es.adbWireless;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -12,10 +13,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dd.CircularProgressButton;
+import com.squareup.otto.Subscribe;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,12 +29,13 @@ public class MainActivity extends AppCompatActivity {
     private TextView tv_footer_1;
     private TextView tv_footer_2;
     private TextView tv_footer_3;
-    private ImageView iv_button;
+    private CircularProgressButton circularButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
         initView();
         if (Utils.mNotificationManager == null) {
             Utils.mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -45,14 +47,13 @@ public class MainActivity extends AppCompatActivity {
                     MainActivity.this.finish();
                 }
             });
-            builder.setIcon(android.R.drawable.ic_dialog_alert);
             builder.create();
             builder.setTitle(R.string.no_root_title);
             builder.show();
         }
 
         wifiState = Utils.checkWifiState(this);
-            Utils.saveWiFiState(this, wifiState);
+        Utils.saveWiFiState(this, wifiState);
         if (!wifiState) {
             if (Utils.prefsWiFiOn(this)) {
                 Utils.enableWiFi(this, true);
@@ -61,44 +62,31 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        this.iv_button.setOnClickListener(new OnClickListener() {
+        circularButton = (CircularProgressButton) findViewById(R.id.circularButton);
+        circularButton.setIndeterminateProgressMode(true);
+
+        circularButton.setOnClickListener(new OnClickListener() {
+            @Override
             public void onClick(View v) {
                 Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                 if (Utils.prefsHaptic(MainActivity.this))
                     vib.vibrate(45);
-                try {
-                    if (!mState) {
-                        Utils.adbStart(MainActivity.this);
-                    } else {
-                        Utils.adbStop(MainActivity.this);
-                    }
-                    updateState();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
 
-            }
-        });
-
-        final CircularProgressButton circularButton = (CircularProgressButton) findViewById(R.id.circularButton);
-        circularButton.setIndeterminateProgressMode(true);
-        circularButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (circularButton.getProgress() == 0) {
-                    circularButton.setProgress(50);
-                } else if (circularButton.getProgress() == -1) {
-                    circularButton.setProgress(0);
+                Intent i = new Intent(getApplication(), AdbService.class);
+                if (!mState) {
+                    i.setAction(AdbService.EXTRA_ACTION_START);
                 } else {
-                    circularButton.setProgress(-1);
+                    i.setAction(AdbService.EXTRA_ACTION_STOP);
                 }
+                startService(i);
+                circularButton.setProgress(50);
+
             }
         });
 
     }
 
     private void initView() {
-        this.iv_button = (ImageView) findViewById(R.id.iv_button);
         this.tv_footer_1 = (TextView) findViewById(R.id.tv_footer_1);
         this.tv_footer_2 = (TextView) findViewById(R.id.tv_footer_2);
         this.tv_footer_3 = (TextView) findViewById(R.id.tv_footer_3);
@@ -107,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        BusPro.register(this);
         SharedPreferences settings = getSharedPreferences("wireless", 0);
         mState = settings.getBoolean("mState", false);
         wifiState = settings.getBoolean("wifiState", false);
@@ -114,24 +103,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        try {
-            Utils.adbStop(this);
-            Utils.mNotificationManager.cancelAll();
-        } catch (Exception e) {
-            //no-op
-        }
-        /*
-		 * try { if(Utils.mWakeLock != null) { Utils.mWakeLock.release(); } } catch (Exception e) { }
-		 */
-        try {
-            if (Utils.prefsWiFiOff(this) && !wifiState && Utils.checkWifiState(this)) {
-                Utils.enableWiFi(this, false);
-            }
-        } catch (Exception e) {
-            //no-op
-        }
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
+        BusPro.unregister(this);
     }
 
     @Override
@@ -140,6 +114,14 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    @Subscribe
+    public void OnAdbConnectChange(AdbService.ADBEvent event){
+        if(event.isSuccess()){
+            circularButton.setProgress(100);
+        }else{
+            circularButton.setProgress(-1);
+        }
+    }
 
     /*public boolean onMenuItemSelected(int featureId, MenuItem item) {
         switch (item.getItemId()) {
@@ -168,12 +150,13 @@ public class MainActivity extends AppCompatActivity {
             }
             tv_footer_2.setVisibility(View.VISIBLE);
             tv_footer_3.setVisibility(View.VISIBLE);
-            iv_button.setImageResource(R.drawable.bt_on);
+
+
         } else {
             tv_footer_1.setText(R.string.footer_text_off);
             tv_footer_2.setVisibility(View.INVISIBLE);
             tv_footer_3.setVisibility(View.INVISIBLE);
-            iv_button.setImageResource(R.drawable.bt_off);
+
         }
     }
 

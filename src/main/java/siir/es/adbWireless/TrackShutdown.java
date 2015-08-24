@@ -57,11 +57,9 @@ public class TrackShutdown extends BroadcastReceiver {
                 Utils.saveWiFiState(context, MainActivity.wifiState);
             }
 
-            try {
-                Utils.adbStart(context);
-            } catch (Exception e) {
-                Logger.e(e, "call adbStart() ERROR ********");
-            }
+            Intent i = new Intent(context, AdbService.class);
+            i.setAction(AdbService.EXTRA_ACTION_START);
+            context.startService(i);
 
         }
 

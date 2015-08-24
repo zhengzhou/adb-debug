@@ -40,7 +40,6 @@ public class Utils {
     public static WakeLock mWakeLock;
 
     public static final int START_NOTIFICATION_ID = 1;
-    public static final int ACTIVITY_SETTINGS = 2;
 
     public static void saveWiFiState(Context context, boolean wifiState) {
         SharedPreferences settings = context.getSharedPreferences("wireless", 0);
@@ -65,85 +64,6 @@ public class Utils {
         builder.create();
         builder.setTitle(R.string.no_wifi_title);
         builder.show();
-    }
-
-    @SuppressWarnings("deprecation")
-    public static boolean adbStart(Context context) {
-        try {
-            if (!MainActivity.USB_DEBUG) {
-                Utils.setProp("service.adb.tcp.port", MainActivity.PORT);
-                try {
-                    if (Utils.isProcessRunning("adbd")) {
-                        Utils.runRootCommand("stop adbd");
-                    }
-                } catch (Exception e) {
-                }
-                Utils.runRootCommand("start adbd");
-            }
-            try {
-                MainActivity.mState = true;
-            } catch (Exception e) {
-            }
-            SharedPreferences settings = context.getSharedPreferences("wireless", 0);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putBoolean("mState", true);
-            editor.apply();
-
-            // Try to auto connect
-            if (Utils.prefsAutoCon(context)) {
-                Utils.autoConnect(context, "c");
-            }
-
-            // Wake Lock
-            if (Utils.prefsScreenOn(context)) {
-                final PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, context.getClass().getName());
-                mWakeLock.acquire();
-            }
-
-            if (Utils.prefsNoti(context)) {
-                Utils.showNotification(context, R.drawable.ic_stat_adbwireless, context.getString(R.string.noti_text) + " " + Utils.getWifiIp(context));
-            }
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
-    }
-
-    public static boolean adbStop(Context context) throws Exception {
-        try {
-            if (!MainActivity.USB_DEBUG) {
-                if (MainActivity.mState) {
-                    setProp("service.adb.tcp.port", "-1");
-                    runRootCommand("stop adbd");
-                    runRootCommand("start adbd");
-                }
-            }
-            MainActivity.mState = false;
-
-            SharedPreferences settings = context.getSharedPreferences("wireless", 0);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putBoolean("mState", false);
-            editor.apply();
-
-            // Try to auto disconnect
-            if (Utils.prefsAutoCon(context)) {
-                Utils.autoConnect(context, "d");
-            }
-
-            // Wake Lock
-            if (mWakeLock != null) {
-                mWakeLock.release();
-            }
-
-            if (Utils.mNotificationManager != null) {
-                Utils.mNotificationManager.cancelAll();
-            }
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
-
     }
 
     public static void autoConnect(Context context, String mode) {

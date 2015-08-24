@@ -2,46 +2,25 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:padding="10dp">
+    >
 
     <TextView
         android:id="@+id/tv_top_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:paddingBottom="20dp"
-        android:paddingTop="20dp"
+        android:padding="20dp"
+
         android:text="@string/top_text"
         android:textSize="16sp"
         android:textStyle="bold"
         android:typeface="normal" />
 
-    <LinearLayout
-        android:id="@+id/LinearLayout01"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/iv_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/bt_on"/>
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/tv_footer_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:paddingTop="20dp"
-        android:text="@string/footer_text_1"/>
 
     <com.dd.CircularProgressButton
         android:id="@+id/circularButton"
@@ -49,23 +28,42 @@
         android:layout_height="64dp"
         android:textColor="@color/white"
         android:textSize="18sp"
-
+        android:layout_margin="15dp"
 
         app:cpb_cornerRadius="48dp"
         app:cpb_iconComplete="@drawable/ic_action_accept"
         app:cpb_iconError="@drawable/ic_action_cancel"
         app:cpb_textIdle="@string/adb_open" />
 
+
     <TextView
-        android:id="@+id/tv_footer_2"
+        android:id="@+id/tv_footer_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingBottom="10sp"
-        android:paddingTop="10sp"
-        android:text="@string/connect_sample"
-        android:textStyle="bold"
-        android:typeface="monospace"/>
+        android:gravity="center_vertical"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:text="@string/footer_text_1"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="#3c3f41"
+        android:padding="5dp"
+        >
+        <TextView
+            android:id="@+id/tv_footer_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10sp"
+            android:paddingTop="10sp"
+            android:text="@string/connect_sample"
+            android:textStyle="bold"
+            android:textColor="#bbb"
+            android:typeface="monospace"/>
+
+    </FrameLayout>
 
     <TextView
         android:id="@+id/tv_footer_3"
