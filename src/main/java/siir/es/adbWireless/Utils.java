@@ -22,6 +22,7 @@ import android.net.wifi.WifiManager;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
+import android.support.v7.app.NotificationCompat;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -196,24 +197,30 @@ public class Utils {
 
     @SuppressWarnings("deprecation")
     public static void showNotification(Context context, int icon, String text) {
-        final Notification notifyDetails = new Notification(icon, text, System.currentTimeMillis());
-        notifyDetails.flags = Notification.FLAG_ONGOING_EVENT;
-        if (prefsSound(context)) {
+        Intent notifyIntent = new Intent(context, MainActivity.class);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent intent = PendingIntent.getActivity(context, 0, notifyIntent, 0);
+
+        Notification notification = new NotificationCompat.Builder(context)
+                .setContentText(text)
+                .setSmallIcon(icon)
+                .setOngoing(true)
+                .setContentIntent(intent)
+                .build();
+
+        /*if (prefsSound(context)) {
             notifyDetails.defaults |= Notification.DEFAULT_SOUND;
         }
         if (prefsVibrate(context)) {
             notifyDetails.defaults |= Notification.DEFAULT_VIBRATE;
-        }
-        Intent notifyIntent = new Intent(context, MainActivity.class);
-        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent intent = PendingIntent.getActivity(context, 0, notifyIntent, 0);
-        notifyDetails.contentIntent = intent;
+        }*/
+        
         //notifyDetails.setLatestEventInfo(context, context.getResources().getString(R.string.noti_title), text, intent);
 
         if (Utils.mNotificationManager == null) {
             Utils.mNotificationManager = (NotificationManager) context.getSystemService(Activity.NOTIFICATION_SERVICE);
         }
-        Utils.mNotificationManager.notify(Utils.START_NOTIFICATION_ID, notifyDetails);
+        Utils.mNotificationManager.notify(Utils.START_NOTIFICATION_ID, notification);
     }
 
     public static boolean prefsOnBoot(Context context) {

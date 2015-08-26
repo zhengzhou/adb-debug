@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import com.orhanobut.logger.Logger;
+
 /**
  * adb workThread.
  * Created by xu on 2015/8/24 0024.
@@ -29,6 +31,14 @@ public class AdbService extends IntentService {
         public boolean isSuccess() {
             return mSuccess;
         }
+
+        @Override
+        public String toString() {
+            return "ADBEvent{" +
+                    "Action='" + mAction + '\'' +
+                    ", result=" + mSuccess +
+                    '}';
+        }
     }
 
     /**
@@ -46,6 +56,12 @@ public class AdbService extends IntentService {
             result = adbStart(this);
         }else if(EXTRA_ACTION_STOP.equals(action)){
             result = adbStop(this);
+        }
+        try {
+            Thread.sleep(2000l);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Logger.e(e,"sleep error");
         }
         BusPro.post(new ADBEvent(action, result));
     }

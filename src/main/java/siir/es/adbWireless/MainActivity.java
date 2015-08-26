@@ -16,6 +16,7 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import com.dd.CircularProgressButton;
+import com.orhanobut.logger.Logger;
 import com.squareup.otto.Subscribe;
 
 public class MainActivity extends AppCompatActivity {
@@ -116,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe
     public void OnAdbConnectChange(AdbService.ADBEvent event){
+        Logger.d(event.toString());
         if(event.isSuccess()){
             circularButton.setProgress(100);
         }else{
